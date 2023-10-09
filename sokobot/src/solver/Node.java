@@ -2,34 +2,44 @@ package solver;
 
 /*
     This node class represents a state in the game.
-    @var state - is the reference of its coordinate(x,y)
+    @var itemData - is the reference of the current coordinates of movable items
     @var parent is the reference of node's parent for tracking the path,
-    @var action represents the move taken to reach
-    that state, can either be u(up),d(down),l(left),r(right).
+    @var actions represents the string moves taken to reach
+    that state.
  */
 
 public class Node {
-    private final int[] state;
-    private final Node parent;
-    private final char action;
+     private String actions;
+    private char[][] itemData;
+    private Node parentNode;
 
-    public Node(int[] state, Node parent, char action){
-        this.state = new int[state.length];
-        System.arraycopy(state,0,this.state,0,state.length);
-        this.parent = parent;
-        this.action = action;
+    public Node(char[][]itemsData, String actions, Node parentNode){
+        /*
+            Idea here is to copy all the actions done so far, copy the
+            latest state after implementation of actions, save a pointer to
+            previous state for backtracking in frontier.
+         */
+
+        //String of the actions done to reach this state.
+        this.actions = actions;
+
+        //MAIN STRUCTURE OF STATE
+        this.itemData = itemsData;
+
+        //Parent of this node state
+        this.parentNode = parentNode;
     }
 
-    public int[] getState(){
-        return this.state;
+
+    public char[][] getItemData() {
+        return itemData;
     }
 
-    public Node getParent(){
-        return this.parent;
+    public String getActions(){
+        return actions;
     }
 
-    public char getAction(){
-        return this.action;
+    public Node getParentNode() {
+        return parentNode;
     }
-
 }

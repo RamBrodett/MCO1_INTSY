@@ -14,9 +14,9 @@ public class StackFrontier {
         this.frontier.add(node);
     }
 
-    public boolean containsState(int[] state){
+    public boolean containsState(char[][]itemData){
         for(Node node : frontier){
-            if (Arrays.equals(state, node.getState())){
+            if (Arrays.deepEquals(itemData, node.getItemData())){
                 return true;
             }
         }
