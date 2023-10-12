@@ -43,6 +43,22 @@ public class SokoBot {
      * that just moves left and right repeatedly.
      */
 
+    //LET'S DO MULTIPLE APPROACH FOR TESTING
+    String path;
+    path = bfsApproach(width,height,mapData,itemsData);
+
+
+    try {
+
+      Thread.sleep(3000);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
+  }
+
+  public String bfsApproach(int width, int height, char[][] mapData, char[][] itemsData){
+
     // starting location of the character -- we need this to know if the actions we will
     // apply to get the next state is valid and optimal?
     int startingPlaceX,startingPlaceY;
@@ -60,14 +76,7 @@ public class SokoBot {
 
     qf.add(initialState);
 
-
-    try {
-
-      Thread.sleep(3000);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
+    return "NONE";
   }
 
   public char[][] deepcloneItems(char[][]itemsData){
