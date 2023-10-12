@@ -1,5 +1,6 @@
 package solver;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /* --- this is a rough idea -- suggest edits or new idea in making this code work
   Structure im trying to create is a bfs algo that starting from an initial state we will
@@ -45,7 +46,9 @@ public class SokoBot {
 
     //LET'S DO MULTIPLE APPROACH FOR TESTING
     String path;
-    path = bfsApproach(width,height,mapData,itemsData);
+    if (bfsApproach(mapData,itemsData) != null){
+      return path =bfsApproach(mapData,itemsData);
+    }
 
 
     try {
@@ -54,43 +57,107 @@ public class SokoBot {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
+
+    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr"; // if it finds no solution it will jiggle
+    //common cause is that it was trap to  no possible moves anymore because of wrong moves to a wall
   }
 
-  public String bfsApproach(int width, int height, char[][] mapData, char[][] itemsData){
+  public String bfsApproach( char[][] mapData, char[][] itemsData){
 
-    // starting location of the character -- we need this to know if the actions we will
-    // apply to get the next state is valid and optimal?
-    int startingPlaceX,startingPlaceY;
+    Node initialState = new Node(mapData,itemsData,"",null);
+    // for visited nodes(State)
+    int state_explored = 0;
+    HashMap<Node,Boolean> visited = new HashMap<>();
 
-    for(int i = 0; i<height; i++){
-      for(int j = 0; j<width; j++){
-        if(itemsData[i][j]=='@'){
-          startingPlaceX = i;
-          startingPlaceY = j;
+    qf.add(initialState);
+
+    while(!qf.isEmpty()){
+      Node current_State = qf.remove();
+
+      if(current_State.isGoalState()){
+        return current_State.getActions();
+      }
+      
+      ArrayList<Character> currStatePossibleMoves = current_State.getValidMoves();
+
+      for (char move: currStatePossibleMoves) {
+
+        Node child = new Node(mapData,
+                              succState(move,current_State.getItemData(),
+                              current_State.getLocX(),
+                              current_State.getLocY()),current_State.getActions() + move,
+                              current_State);
+        if(!visited.containsKey(child)){
+          qf.add(child);
+          visited.put(child,true);
+          state_explored++;
         }
       }
     }
 
-    Node initialState = new Node(itemsData,"",null);
-
-    qf.add(initialState);
-
-    return "NONE";
+    return null;
   }
 
   public char[][] deepcloneItems(char[][]itemsData){
     // get the row length and get the column length
     char[][] clone = new char[itemsData.length][itemsData[0].length];
     for(int i = 0; i < itemsData.length; i++){
-      System.arraycopy(itemsData[i],0,clone,0,itemsData[0].length);
+      System.arraycopy(itemsData[i],0,clone[i],0,itemsData[0].length);
     }
     return clone;
   }
 
-  public boolean isMoveValid(int locX, int locY,char[][] mapData,char[][] itemsData){
+  public char[][] succState(char action, char[][]itemData,
+                            int locX, int locY){
 
-    return false;
+    char[][] newState = deepcloneItems(itemData);
+
+    switch(action){
+      case 'u' -> {
+        if(itemData[locX-1][locY] != '$') {
+          newState[locX-1][locY] = '@';
+        }
+        //moves the crate forward if there is a crate
+        else{
+          newState[locX-2][locY] = '$';
+          newState[locX-1][locY] = '@';
+        }
+      }
+      case 'd' ->{
+        if(itemData[locX+1][locY] != '$') {
+          newState[locX+1][locY] = '@';
+        }
+        //moves the crate forward if there is a crate
+        else{
+          newState[locX+2][locY] = '$';
+          newState[locX+1][locY] = '@';
+        }
+      }
+      case 'l' ->{
+        if(itemData[locX][locY-1] != '$') {
+          newState[locX][locY-1] = '@';
+        }
+        //moves the crate forward if there is a crate
+        else{
+          newState[locX][locY-2] = '$';
+          newState[locX][locY-1] = '@';
+        }
+      }
+      case 'r'-> {
+        if(itemData[locX][locY+1] != '$') {
+          newState[locX][locY+1] = '@';
+        }
+        //moves the crate forward if there is a crate
+        else{
+          newState[locX][locY+2] = '$';
+          newState[locX][locY+1] = '@';
+        }
+      }
+    }
+
+    newState[locX][locY] = ' ';
+
+    return newState;
   }
 
 
