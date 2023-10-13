@@ -2,18 +2,16 @@ package solver;
 
 import java.util.NoSuchElementException;
 
-public class QueueFrontier extends StackFrontier{
-    public QueueFrontier(){
-        super();
+public class QueueFrontier extends StackFrontier {
+    public QueueFrontier() {
     }
 
-    public Node remove(){
-        if(isEmpty()){
+    @Override
+    public Node remove() {
+        if (this.isEmpty()) {
             throw new NoSuchElementException("Empty frontier");
-        }else{
-            return frontier.remove(0);
+        } else {
+            return this.frontier.remove(0);
         }
     }
-
-
 }

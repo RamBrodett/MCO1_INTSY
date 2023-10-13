@@ -1,7 +1,7 @@
 package solver;
 
 /*
-    This node class represents a state in the game.
+    This node class will represent a state in the game.
     @var itemData - is the reference of the current coordinates of movable items
     @var parent is the reference of node's parent for tracking the path,
     @var actions represents the string moves taken to reach
@@ -11,26 +11,22 @@ package solver;
 import java.util.ArrayList;
 
 public class Node {
-    private int height;
-    private int width;
-    private String actions;
-    private char[][] itemData;
+    private final int height;
+    private final int width;
+    private final String actions;
+    private final char[][] itemData;
     private int locX;
     private  int locY;
-    private char[][] mapData;
-    private Node parentNode;
+    private final char[][] mapData;
+    private final Node parentNode;
 
     public Node(char[][]mapData, char[][]itemsData, String actions, Node parentNode){
-        /*
-            Idea here is to copy all the actions done so far, copy the
-            latest state after implementation of actions, save a pointer to
-            previous state for backtracking in frontier.
-         */
 
-        //String of the actions done to reach this state.
+        //Dimension of the state
         this.height = itemsData.length;
         this.width = itemsData[0].length;
 
+        //String of the actions done to reach this state.
         this.actions = actions;
 
         //MAIN STRUCTURE OF STATE
@@ -40,7 +36,7 @@ public class Node {
         //Parent of this node state
         this.parentNode = parentNode;
 
-
+        //To get the height and width of the map.
         for(int i = 0; i<height; i++){
             for(int j = 0; j<width; j++){
                 if(itemsData[i][j]=='@'){
@@ -49,6 +45,26 @@ public class Node {
                 }
             }
         }
+    }
+
+    public char[][] getItemData() {
+        return itemData;
+    }
+
+    public String getActions(){
+        return actions;
+    }
+
+    public Node getParentNode() {
+        return parentNode;
+    }
+
+    public int getLocX() {
+        return locX;
+    }
+
+    public int getLocY() {
+        return locY;
     }
 
     // Checks every crate seen in the map structure and validates
@@ -64,21 +80,7 @@ public class Node {
         return true;
     }
 
-
-    public char[][] getItemData() {
-        return itemData;
-    }
-
-    public String getActions(){
-        return actions;
-    }
-
-    public Node getParentNode() {
-        return parentNode;
-    }
-
-
-
+    // Gets the valid moves
     public ArrayList<Character> getValidMoves(){
 
         char upMap1 = mapData[locX-1][locY];
@@ -175,18 +177,10 @@ public class Node {
         return validMoves;
     }
 
-    public int getLocX() {
-        return locX;
-    }
-
-    public int getLocY() {
-        return locY;
-    }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Node) {
-            Node other = (Node) obj;
+        if (obj instanceof Node other) {
             return this.locX == other.locX && this.locY == other.locY &&
                     java.util.Arrays.deepEquals(this.itemData, other.itemData);
         }
@@ -198,6 +192,18 @@ public class Node {
         return java.util.Arrays.deepHashCode(itemData) + locX + locY;
     }
 
+    /*
+     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Node) {
+            Node other = (Node) obj;
+            return this.locX == other.locX && this.locY == other.locY &&
+                    java.util.Arrays.deepEquals(this.itemData, other.itemData);
+        }
+        return false;
+    }
+     */
+/*
     // for tracing the states.
     public void printItemdata(){
 
@@ -220,6 +226,8 @@ public class Node {
         }
         System.out.println("--------------------------------------");
     }
+
+ */
 
 }
 
