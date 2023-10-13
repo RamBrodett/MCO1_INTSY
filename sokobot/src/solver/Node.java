@@ -77,73 +77,97 @@ public class Node {
         return parentNode;
     }
 
+
+
     public ArrayList<Character> getValidMoves(){
+
+        char upMap1 = mapData[locX-1][locY];
+        char upItem1 = itemData[locX-1][locY];
+
+        char downMap1 = mapData[locX+1][locY];
+        char downItem1 = itemData[locX+1][locY];
+
+        char leftMap1 = mapData[locX][locY-1];
+        char leftItem1 = itemData[locX][locY-1];
+
+        char rightMap1 = mapData[locX][locY+1];
+        char rightItem1 = itemData[locX][locY+1];
+
 
         ArrayList<Character> validMoves = new ArrayList<>();
         //check up
-        if(mapData[locX-1][locY]!='#'){
+        if(upMap1!='#'){
 
-            if ((mapData[locX-1][locY] == ' '|| mapData[locX-1][locY] == '.')&&
-                    itemData[locX-1][locY] != '$'){
+            if ((upMap1 == ' '|| upMap1 == '.')&&
+                    upItem1 != '$'){
                 validMoves.add('u');
             }
+            char upMap2 = mapData[locX-2][locY];
+            char upItem2 = itemData[locX-2][locY];
 
             //  if the next position has a box, check if the next upper location
             //  is free to be possible to move
-            if( itemData[locX-1][locY] != '$' &&
-                    (mapData[locX-2][locY] == ' '|| mapData[locX-2][locY] == '.')&&
-                            itemData[locX-2][locY] != '$'){
+            if( upItem1 == '$' && (upMap2 == ' '||upMap2 == '.')&&
+                    upItem2 != '$'){
                 validMoves.add('u');
             }
         }
 
         //check down
-        if(mapData[locX+1][locY]!='#'){
+        if(downMap1!='#'){
 
-            if ((mapData[locX+1][locY] == ' '|| mapData[locX-1][locY] == '.')&&
-                    itemData[locX+1][locY] != '$'){
+            if ((downMap1 == ' '|| downMap1 == '.')&&
+                   downItem1 != '$'){
                 validMoves.add('d');
             }
 
+            char downMap2 = mapData[locX+2][locY];
+            char downItem2 = itemData[locX+2][locY];
+
             //  if the next position has a box, check if the next upper location
             //  is free to be possible to move
-            if( itemData[locX+1][locY] == '$' &&
-                    (mapData[locX+2][locY] == ' '|| mapData[locX+2][locY] == '.') &&
-                            itemData[locX+2][locY] != '$'){
+            if( downItem1 == '$' &&
+                    (downMap2 == ' '|| downMap2 == '.') &&
+                            downItem2 != '$'){
                 validMoves.add('d');
             }
         }
 
         //check left
-        if(mapData[locX][locY-1]!='#'){
+        if(leftMap1!='#'){
 
-            if ((mapData[locX][locY-1] == ' '|| mapData[locX][locY-1] == '.')&&
-                    itemData[locX][locY-1] != '$'){
+            if ((leftMap1 == ' '|| leftMap1 == '.')&&
+                    leftItem1 != '$'){
                 validMoves.add('l');
             }
 
+            char leftMap2 = mapData[locX][locY-2];
+            char leftItem2 = itemData[locX][locY-2];
+
             //  if the next position has a box, check if the next upper location
             //  is free to be possible to move
-            if( itemData[locX][locY-1] == '$' &&
-                    (mapData[locX][locY-2] == ' '|| mapData[locX][locY-2] == '.')&&
-                    itemData[locX][locY-2] != '$'){
+            if( leftItem1 == '$' &&
+                    (leftMap2 == ' '|| leftMap2 == '.')&&
+                    leftItem2 != '$'){
                 validMoves.add('l');
             }
         }
 
         //check right
-        if(mapData[locX][locY+1]!='#'){
+        if(rightMap1!='#'){
 
-            if ((mapData[locX][locY+1] == ' '|| mapData[locX][locY+1] == '.')&&
-                    itemData[locX][locY+1] != '$'){
+            if ((rightMap1== ' '|| rightMap1 == '.')&&
+                    rightItem1 != '$'){
                 validMoves.add('r');
             }
 
+            char rightMap2 = mapData[locX][locY+2];
+            char rightItem2 = itemData[locX][locY+2];
             //  if the next position has a box, check if the next upper location
             //  is free to be possible to move
-            if( itemData[locX][locY+1] == '$' &&
-                    (mapData[locX][locY+2] == ' '|| mapData[locX][locY+2] == '.')&&
-                            itemData[locX][locY+2] != '$'){
+            if( rightItem1 == '$' &&
+                    (rightMap2 == ' '|| rightMap2 == '.')&&
+                            rightItem2 != '$'){
                 validMoves.add('r');
             }
         }
@@ -174,10 +198,10 @@ public class Node {
         return java.util.Arrays.deepHashCode(itemData) + locX + locY;
     }
 
-/*
+    // for tracing the states.
     public void printItemdata(){
 
-        System.out.println("--------------------------------------");
+        System.out.println("---------------ITEM DATA--------------------");
         for (int i =0; i<itemData.length;i++){
             for (int j =0; j<itemData[0].length;j++)
                 System.out.print(itemData[i][j]);
@@ -185,6 +209,17 @@ public class Node {
         }
         System.out.println("--------------------------------------");
     }
- */
+
+    public void printMapdata(){
+
+        System.out.println("---------------MAP DATA--------------------");
+        for (int i =0; i< mapData.length;i++){
+            for (int j =0; j< mapData[0].length;j++)
+                System.out.print(mapData[i][j]);
+            System.out.println();
+        }
+        System.out.println("--------------------------------------");
+    }
+
 }
 

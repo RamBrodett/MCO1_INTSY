@@ -65,6 +65,7 @@ public class SokoBot {
   public String bfsApproach( char[][] mapData, char[][] itemsData){
 
     Node initialState = new Node(mapData,itemsData,"",null);
+
     // for visited nodes(State)
     int state_explored = 0;
     HashMap<Node,Boolean> visited = new HashMap<>();
@@ -73,6 +74,11 @@ public class SokoBot {
 
     while(!qf.isEmpty()){
       Node current_State = qf.remove();
+      current_State.printItemdata();
+      System.out.println();
+      System.out.println();
+      current_State.printMapdata();
+      System.out.println("NEXT STATE");
 
       if(current_State.isGoalState()){
         return current_State.getActions();
@@ -95,14 +101,16 @@ public class SokoBot {
       }
     }
 
+
+
     return null;
   }
 
-  public char[][] deepcloneItems(char[][]itemsData){
+  public char[][] deepcloneItems(char[][]arrSRC){
     // get the row length and get the column length
-    char[][] clone = new char[itemsData.length][itemsData[0].length];
-    for(int i = 0; i < itemsData.length; i++){
-      System.arraycopy(itemsData[i],0,clone[i],0,itemsData[0].length);
+    char[][] clone = new char[arrSRC.length][arrSRC[0].length];
+    for(int i = 0; i < arrSRC.length; i++){
+      System.arraycopy(arrSRC[i],0,clone[i],0,arrSRC[0].length);
     }
     return clone;
   }
@@ -154,9 +162,7 @@ public class SokoBot {
         }
       }
     }
-
     newState[locX][locY] = ' ';
-
     return newState;
   }
 
