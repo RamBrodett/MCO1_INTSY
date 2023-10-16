@@ -10,7 +10,7 @@ package solver;
 
 import java.util.ArrayList;
 
-public class Node {
+public class Node{
     private final int height;
     private final int width;
     private final String actions;
@@ -19,6 +19,9 @@ public class Node {
     private  int locY;
     private final char[][] mapData;
     private final Node parentNode;
+
+    private int cost;
+
 
     public Node(char[][]mapData, char[][]itemsData, String actions, Node parentNode){
 
@@ -33,6 +36,8 @@ public class Node {
         this.itemData = itemsData;
         this.mapData = mapData;
 
+        this.cost = 0;
+
         //Parent of this node state
         this.parentNode = parentNode;
 
@@ -45,6 +50,14 @@ public class Node {
                 }
             }
         }
+    }
+
+    public void addCostToNode(int cost){
+        this.cost = cost;
+    }
+
+    public char[][] getMapData() {
+        return mapData;
     }
 
     public char[][] getItemData() {
@@ -65,6 +78,10 @@ public class Node {
 
     public int getLocY() {
         return locY;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     // Checks every crate seen in the map structure and validates
@@ -177,7 +194,6 @@ public class Node {
         return validMoves;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Node other) {
@@ -192,17 +208,7 @@ public class Node {
         return java.util.Arrays.deepHashCode(itemData) + locX + locY;
     }
 
-    /*
-     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Node) {
-            Node other = (Node) obj;
-            return this.locX == other.locX && this.locY == other.locY &&
-                    java.util.Arrays.deepEquals(this.itemData, other.itemData);
-        }
-        return false;
-    }
-     */
+
 /*
     // for tracing the states.
     public void printItemdata(){
