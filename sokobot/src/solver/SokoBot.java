@@ -42,7 +42,7 @@ public class SokoBot {
     // Creates the initial state
     Node initialState = new Node(mapData,itemsData,"");
 
-    initialState.addCostToNode(hf.getHeuristicCost(initialState));
+    initialState.addCostToNode(hf.getCost(initialState) );
 
     // To keep Track of visited nodes
     Set<Node> visited = new HashSet<>();
@@ -73,7 +73,7 @@ public class SokoBot {
                         current_State.getLocY()),current_State.getActions() + move);
 
         if(!visited.contains(child)){
-          child.addCostToNode(hf.getHeuristicCost(child));// getting cost consumes time - to cut off time
+          child.addCostToNode(hf.getCost(child));// getting cost consumes time - to cut off time
                                                           // only add when it is not visited.
           frontier.add(child); //adds the node to the priority queue, already compares which to prioritize first
         }
