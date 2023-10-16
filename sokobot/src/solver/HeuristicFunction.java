@@ -1,34 +1,30 @@
 package solver;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class HeuristicFunction {
 
-    private int manhattanDistance(char[][] itemData, char[][]mapData){
+    Set<Point> goalCoordinates;
+    HeuristicFunction(Set<Point> goalCoordinates){
+        this.goalCoordinates = goalCoordinates;
+    }
+
+
+    private int manhattanDistance(Set<Point> cratesCoordinates){
         //create storage of coordinates for the goals and crates
         int aggregatedDistance = 0;
-        List<int[]> goalCoordinates = new ArrayList<>();
-        List<int[]> cratesCoordinates = new ArrayList<>();
 
-        for(int i = 0; i< itemData.length;i++){
-            for(int j = 0; j<itemData[0].length;j++){
-                if(mapData[i][j]=='.') {
-                    int[] coordinate = {i,j};
-                    goalCoordinates.add(coordinate);
-                }
-                if (itemData[i][j] == '$'){
-                    int[] coordinate = {i,j};
-                    cratesCoordinates.add(coordinate);
-                }
-            }
-        }
         // now for every crates find the nearest distance to a goal
 
-        for(int[] crateLoc : cratesCoordinates){
+        for(Point crateLoc : cratesCoordinates){
             int min = 10000;
-            for(int[] goalLoc : goalCoordinates){
-                int temp = Math.abs(crateLoc[0]-goalLoc[0]) + Math.abs(crateLoc[1]-goalLoc[1]);
+            for(Point goalLoc : goalCoordinates){
+                int temp = (int) (Math.abs(crateLoc.getX()-goalLoc.getX()) +
+                                  Math.abs(crateLoc.getY() -goalLoc.getY()));
                 if (temp < min) min = temp;
             }
             aggregatedDistance += min;
@@ -39,7 +35,18 @@ public class HeuristicFunction {
     }
 
     public int getHeuristicCost(Node node){
+        char[][] itemData = node.getItemData();
 
-        return manhattanDistance(node.getItemData(), node.getMapData());
+        Set<Point> cratesCoordinates = new HashSet<>();
+
+        for(int i = 0; i< itemData.length;i++){
+            for(int j = 0; j<itemData[0].length;j++){
+                if (itemData[i][j] == '$'){
+                    cratesCoordinates.add(new Point(i,j));
+                }
+            }
+        }
+
+        return manhattanDistance(cratesCoordinates);
     }
 }

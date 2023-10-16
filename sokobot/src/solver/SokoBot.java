@@ -1,12 +1,14 @@
 package solver;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class SokoBot {
 
   // Generate a  QUEUE Frontier for bfs
   PrioQueueFrontier frontier;
   HeuristicFunction hf;
+  Set<Point> goalCoordinates;
 
 
   // Dimension of the map
@@ -16,7 +18,7 @@ public class SokoBot {
   // Sokobot Constructor
   public SokoBot(){
     frontier = new PrioQueueFrontier();
-    hf  = new HeuristicFunction();
+    goalCoordinates = new HashSet<>();
   }
 
   /*
@@ -34,13 +36,15 @@ public class SokoBot {
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     this.height = height;
     this.width = width;
+    this.goalCoordinates = getGoalCoordinates(mapData, height, width);
+    hf = new HeuristicFunction(goalCoordinates);
 
     // Creates the initial state
     Node initialState = new Node(mapData,itemsData,"",null);
     initialState.addCostToNode(hf.getHeuristicCost(initialState));
 
     // To keep Track of visited nodes
-    HashMap<Node,Boolean> visited = new HashMap<>();
+    HashSet<Node> visited = new HashSet<>();
 
     // Adds the initial state to frontier to explore state
     frontier.addNode(initialState);
@@ -56,6 +60,7 @@ public class SokoBot {
         return current_State.getActions();
       }
 
+      //Gets the valid moves for the state
       ArrayList<Character> currStatePossibleMoves = current_State.getValidMoves();
 
       for (char move: currStatePossibleMoves) {
@@ -65,11 +70,12 @@ public class SokoBot {
                         current_State.getLocX(),
                         current_State.getLocY()),current_State.getActions() + move,
                 current_State);
-        child.addCostToNode(hf.getHeuristicCost(child));
 
-        if(!visited.containsKey(child)){
-          frontier.addNode(child);
-          visited.put(child,true);
+        if(!visited.contains(child)){
+          child.addCostToNode(hf.getHeuristicCost(child));// getting cost consumes time - to cut off time
+                                                          // only add when it is not visited.
+          frontier.addNode(child); //adds the node to the priority queue, already compares which to prioritize first
+          visited.add(child); // list the nodes as visited.
         }
       }
     }
@@ -93,52 +99,46 @@ public class SokoBot {
 
     char[][] newState = deepcloneItems(itemData);
 
-    switch(action){
+    int newXLoc = locX;
+    int newYLoc = locY;
 
+    switch(action){
       case 'u' -> { //upward movement
-        if(itemData[locX-1][locY] != '$') {
-          newState[locX-1][locY] = '@';
-        }
-        //moves the crate forward if there is a crate
-        else{
-          newState[locX-2][locY] = '$';
-          newState[locX-1][locY] = '@';
-        }
+        newXLoc--;
       }
       case 'd' ->{ //downward movement
-        if(itemData[locX+1][locY] != '$') {
-          newState[locX+1][locY] = '@';
-        }
-        //moves the crate forward if there is a crate
-        else{
-          newState[locX+2][locY] = '$';
-          newState[locX+1][locY] = '@';
-        }
+        newXLoc++;
       }
       case 'l' ->{ // leftward movement
-        if(itemData[locX][locY-1] != '$') {
-          newState[locX][locY-1] = '@';
-        }
-        //moves the crate forward if there is a crate
-        else{
-          newState[locX][locY-2] = '$';
-          newState[locX][locY-1] = '@';
-        }
+        newYLoc--;
       }
       case 'r'-> { //rightward movement
-        if(itemData[locX][locY+1] != '$') {
-          newState[locX][locY+1] = '@';
-        }
-        //moves the crate forward if there is a crate
-        else{
-          newState[locX][locY+2] = '$';
-          newState[locX][locY+1] = '@';
-        }
+        newYLoc++;
       }
+    }
+
+    if(itemData[newXLoc][newYLoc] != '$') newState[newXLoc][newYLoc] = '@';
+    else{
+      int newCrateXLoc = newXLoc + (newXLoc-locX);
+      int newCrateYLoc = newYLoc + (newYLoc-locY);
+      newState[newCrateXLoc][newCrateYLoc] = '$';
+      newState[newXLoc][newYLoc] = '@';
     }
     // clears the previous position of the agent.
     newState[locX][locY] = ' ';
     return newState;
+  }
+
+  public Set<Point> getGoalCoordinates(char[][]mapData, int height, int width){
+    Set<Point> goalCoordinates = new HashSet<>();
+    for(int i = 0; i< height;i++){
+      for(int j = 0; j<width;j++){
+        if(mapData[i][j]=='.') {
+          goalCoordinates.add(new Point(i,j));
+        }
+      }
+    }
+    return goalCoordinates;
   }
 
 
