@@ -1,11 +1,14 @@
 package solver;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SokoBot {
 
   // Generate a  QUEUE Frontier for bfs
-  QueueFrontier qf;
+  PrioQueueFrontier frontier;
+  HeuristicFunction hf;
+
 
   // Dimension of the map
   int height;
@@ -13,7 +16,8 @@ public class SokoBot {
 
   // Sokobot Constructor
   public SokoBot(){
-    qf = new QueueFrontier();
+    frontier = new PrioQueueFrontier();
+    hf  = new HeuristicFunction();
   }
 
   /*
@@ -31,20 +35,32 @@ public class SokoBot {
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
     this.height = height;
     this.width = width;
+
     // Creates the initial state
     Node initialState = new Node(mapData,itemsData,"",null);
+    List<int[]> goalCoordinates = new ArrayList<>();
+
+    for(int i = 0; i< initialState.getItemData().length;i++){
+      for(int j = 0; j < initialState.getItemData()[0].length;j++){
+        if(mapData[i][j]=='.') {
+          goalCoordinates.add(new int[]{i,j});
+        }
+      }
+    }
+
+    initialState.addCostToNode(hf.getHeuristicCost(initialState, goalCoordinates));
 
     // To keep Track of visited nodes
     HashMap<Node,Boolean> visited = new HashMap<>();
 
     // Adds the initial state to frontier to explore state
-    qf.add(initialState);
+    frontier.addNode(initialState);
 
     //  looping exploration of states available in frontier
-    while(!qf.isEmpty()){
+    while(!frontier.isEmpty()){
 
       // Gets the first element in frontier (FIFO format)
-      Node current_State = qf.remove();
+      Node current_State = frontier.remove();
 
       //Checks if the current state is already the goal state.
       if(current_State.isGoalState()){
@@ -60,8 +76,10 @@ public class SokoBot {
                         current_State.getLocX(),
                         current_State.getLocY()),current_State.getActions() + move,
                 current_State);
+        child.addCostToNode(hf.getHeuristicCost(child, goalCoordinates));
+
         if(!visited.containsKey(child)){
-          qf.add(child);
+          frontier.addNode(child);
           visited.put(child,true);
         }
       }
