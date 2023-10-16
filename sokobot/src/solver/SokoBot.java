@@ -6,10 +6,9 @@ import java.util.List;
 public class SokoBot {
 
   // Generate a  QUEUE Frontier for bfs
-  PrioQueueFrontier frontier;
+  PriorityQueue<Node> frontier;
   HeuristicFunction hf;
   Set<Point> goalCoordinates;
-
 
   // Dimension of the map
   int height;
@@ -17,7 +16,7 @@ public class SokoBot {
 
   // Sokobot Constructor
   public SokoBot(){
-    frontier = new PrioQueueFrontier();
+    frontier = new PriorityQueue<>(Comparator.comparingInt(Node::getCost));
     goalCoordinates = new HashSet<>();
   }
 
@@ -41,19 +40,21 @@ public class SokoBot {
 
     // Creates the initial state
     Node initialState = new Node(mapData,itemsData,"",null);
+
     initialState.addCostToNode(hf.getHeuristicCost(initialState));
 
     // To keep Track of visited nodes
-    HashSet<Node> visited = new HashSet<>();
+    Set<Node> visited = new HashSet<>();
 
     // Adds the initial state to frontier to explore state
-    frontier.addNode(initialState);
+    frontier.add(initialState);
 
     //  looping exploration of states available in frontier
     while(!frontier.isEmpty()){
 
       // Gets the first element in frontier (FIFO format)
       Node current_State = frontier.remove();
+      visited.add(current_State);
 
       //Checks if the current state is already the goal state.
       if(current_State.isGoalState()){
@@ -74,8 +75,8 @@ public class SokoBot {
         if(!visited.contains(child)){
           child.addCostToNode(hf.getHeuristicCost(child));// getting cost consumes time - to cut off time
                                                           // only add when it is not visited.
-          frontier.addNode(child); //adds the node to the priority queue, already compares which to prioritize first
-          visited.add(child); // list the nodes as visited.
+          frontier.add(child); //adds the node to the priority queue, already compares which to prioritize first
+          //visited.add(child); // list the nodes as visited.
         }
       }
     }
@@ -140,6 +141,5 @@ public class SokoBot {
     }
     return goalCoordinates;
   }
-
 
 }
