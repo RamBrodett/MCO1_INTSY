@@ -46,7 +46,6 @@ public class HeuristicFunction {
                 }
             }
         }
-
         return manhattanDistance(cratesCoordinates);
     }
 }
