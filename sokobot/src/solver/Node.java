@@ -18,12 +18,11 @@ public class Node{
     private int locX;
     private  int locY;
     private final char[][] mapData;
-    private final Node parentNode;
 
     private int cost;
 
 
-    public Node(char[][]mapData, char[][]itemsData, String actions, Node parentNode){
+    public Node(char[][]mapData, char[][]itemsData, String actions){
 
         //Dimension of the state
         this.height = itemsData.length;
@@ -37,9 +36,6 @@ public class Node{
         this.mapData = mapData;
 
         this.cost = 0;
-
-        //Parent of this node state
-        this.parentNode = parentNode;
 
         //To get the height and width of the map.
         for(int i = 0; i<height; i++){
@@ -56,20 +52,12 @@ public class Node{
         this.cost = cost;
     }
 
-    public char[][] getMapData() {
-        return mapData;
-    }
-
     public char[][] getItemData() {
         return itemData;
     }
 
     public String getActions(){
         return actions;
-    }
-
-    public Node getParentNode() {
-        return parentNode;
     }
 
     public int getLocX() {

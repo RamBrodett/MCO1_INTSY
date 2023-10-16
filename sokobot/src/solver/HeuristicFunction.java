@@ -34,6 +34,8 @@ public class HeuristicFunction {
         return aggregatedDistance;
     }
 
+
+
     public int getHeuristicCost(Node node){
         char[][] itemData = node.getItemData();
 

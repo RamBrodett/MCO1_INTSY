@@ -9,7 +9,7 @@ public class SokoBot {
   PriorityQueue<Node> frontier;
   HeuristicFunction hf;
   Set<Point> goalCoordinates;
-
+  char[][] mapData;
   // Dimension of the map
   int height;
   int width;
@@ -33,13 +33,14 @@ public class SokoBot {
                          when a crate or wall is blocking its way of direction)
    */
   public String solveSokobanPuzzle(int width, int height, char[][] mapData, char[][] itemsData) {
+    this.mapData = mapData;
     this.height = height;
     this.width = width;
-    this.goalCoordinates = getGoalCoordinates(mapData, height, width);
+    this.goalCoordinates = getGoalCoordinates(height, width);
     hf = new HeuristicFunction(goalCoordinates);
 
     // Creates the initial state
-    Node initialState = new Node(mapData,itemsData,"",null);
+    Node initialState = new Node(mapData,itemsData,"");
 
     initialState.addCostToNode(hf.getHeuristicCost(initialState));
 
@@ -54,7 +55,7 @@ public class SokoBot {
 
       // Gets the first element in frontier (FIFO format)
       Node current_State = frontier.remove();
-      visited.add(current_State);
+      visited.add(current_State);// list the nodes as visited.
 
       //Checks if the current state is already the goal state.
       if(current_State.isGoalState()){
@@ -69,20 +70,19 @@ public class SokoBot {
         Node child = new Node(mapData,
                 succState(move,current_State.getItemData(),
                         current_State.getLocX(),
-                        current_State.getLocY()),current_State.getActions() + move,
-                current_State);
+                        current_State.getLocY()),current_State.getActions() + move);
 
         if(!visited.contains(child)){
           child.addCostToNode(hf.getHeuristicCost(child));// getting cost consumes time - to cut off time
                                                           // only add when it is not visited.
           frontier.add(child); //adds the node to the priority queue, already compares which to prioritize first
-          //visited.add(child); // list the nodes as visited.
         }
       }
     }
 
     return " "; // It will not move if solution is not found.
   }
+
 
   // Deep clones an array to refrain from altering previous state
   public char[][] deepcloneItems(char[][]arrSRC){
@@ -130,7 +130,7 @@ public class SokoBot {
     return newState;
   }
 
-  public Set<Point> getGoalCoordinates(char[][]mapData, int height, int width){
+  public Set<Point> getGoalCoordinates(int height, int width){
     Set<Point> goalCoordinates = new HashSet<>();
     for(int i = 0; i< height;i++){
       for(int j = 0; j<width;j++){
